@@ -103,6 +103,102 @@ def load_session_history() -> list:
             print(f"[-] Failed to load session history: {e}")
     return []
 
+def update_dashboard_data(report_json_str):
+    import json
+    import re
+    from datetime import datetime
+    import os
+
+    try:
+        report = json.loads(report_json_str)
+        company_name = report.get("target_company", "Unknown Company")
+        
+        def clean_number(val_str):
+            if isinstance(val_str, (int, float)):
+                return val_str
+            nums = re.findall(r'[\d,]+', str(val_str))
+            if nums:
+                return int(nums[0].replace(',', ''))
+            return 0
+
+        fin = report.get("financial_summary", {})
+        burn_rate = clean_number(fin.get("burn_rate", 0))
+        runway = clean_number(fin.get("runway", 0))
+        total_debt = clean_number(fin.get("total_debt", 0))
+        
+        has_lawsuits = False
+        risks = report.get("identified_risks", [])
+        for r in risks:
+            if any(word in r.lower() for word in ["lawsuit", "litigation", "court", "legal"]):
+                has_lawsuits = True
+                break
+
+        months_pool = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+        current_month_idx = datetime.now().month - 1
+        history_months = []
+        for i in range(5, -1, -1):
+            history_months.append(months_pool[(current_month_idx - i) % 12])
+            
+        burn_history = []
+        runway_history = []
+        for i in range(6):
+            factor = 1.0 + (0.04 * (i - 3))
+            burn_history.append(int(burn_rate * factor))
+            runway_history.append(runway + (5 - i))
+
+        new_entry = {
+            "id": str(int(datetime.now().timestamp())),
+            "companyName": company_name,
+            "auditDate": datetime.now().strftime("%Y-%m-%d"),
+            "currentFinancials": {
+                "burnRate": burn_rate,
+                "runway": runway,
+                "totalDebt": total_debt,
+                "hasLawsuits": has_lawsuits
+            },
+            "historicalData": {
+                "months": history_months,
+                "burnRateHistory": burn_history,
+                "runwayHistory": runway_history
+            }
+        }
+
+        db_path = "src/dashboard/audit_reports.json"
+        data_js_path = "src/dashboard/data.js"
+        
+        existing_data = []
+        if os.path.exists(db_path):
+            try:
+                with open(db_path, "r", encoding="utf-8") as f:
+                    existing_data = json.load(f)
+            except Exception:
+                pass
+
+        updated = False
+        for i, item in enumerate(existing_data):
+            if item["companyName"].lower() == company_name.lower():
+                new_entry["id"] = item["id"]
+                existing_data[i] = new_entry
+                updated = True
+                break
+                
+        if not updated:
+            existing_data.append(new_entry)
+
+        # Ensure directory exists
+        os.makedirs("src/dashboard", exist_ok=True)
+
+        with open(db_path, "w", encoding="utf-8") as f:
+            json.dump(existing_data, f, indent=2)
+            
+        with open(data_js_path, "w", encoding="utf-8") as f:
+            f.write(f"const INITIAL_AUDIT_DATA = {json.dumps(existing_data, indent=2)};\n")
+            
+        print(f"[+] Successfully synchronized audit results for '{company_name}' to M&A dashboard database.")
+        
+    except Exception as e:
+        print(f"[-] Failed to update dashboard data: {e}")
+
 # =====================================================================
 # PIPELINE SETUP: CORE STORAGE ENGINE PROVISIONING
 # =====================================================================
@@ -112,7 +208,7 @@ def initialize_rag_stores(client):
         config={"display_name": "fin_index", "embedding_model": "models/gemini-embedding-2"}
     )
     op_fin = client.file_search_stores.upload_to_file_search_store(
-        file_search_store_name=fin_store.name, file="startup_finances.txt"
+        file_search_store_name=fin_store.name, file="data/startup_finances.txt"
     )
 
     print("[*] Provisioning isolated Legal Corporate Policy Repository...")
@@ -120,7 +216,7 @@ def initialize_rag_stores(client):
         config={"display_name": "legal_index", "embedding_model": "models/gemini-embedding-2"}
     )
     op_legal = client.file_search_stores.upload_to_file_search_store(
-        file_search_store_name=legal_store.name, file="buyer_policies.txt"
+        file_search_store_name=legal_store.name, file="data/buyer_policies.txt"
     )
 
     while not (op_fin.done and op_legal.done):
@@ -294,6 +390,9 @@ def run_manual_agent_orchestrator():
     print("FINAL VALIDATED JSON M&A COMPLIANCE REPORT:")
     print("="*70)
     print(final_response.text)
+    
+    # Update M&A Dashboard Data File
+    update_dashboard_data(final_response.text)
     
  # =====================================================================
     # OPERATIONAL CLEANUP

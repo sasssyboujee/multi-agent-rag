@@ -23,3 +23,13 @@ agent_session_state.json
 *.njsproj
 *.sln
 *.swp
+
+# Spec Kit Local Session State
+.specify/feature.json
+
+# Gemini Agent IDE Workspace Folder
+.gemini/
+.specify/
+
+# Specs
+specs/

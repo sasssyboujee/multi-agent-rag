@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M&A Audit History Dashboard</title>
+    
+    <!-- Premium Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js CDN for visual trends -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Dashboard Header -->
+        <header class="app-header">
+            <div class="brand">
+                <span class="logo-icon">🌱</span>
+                <div class="brand-text">
+                    <h1>M&A Audit History Dashboard</h1>
+                    <p class="subtitle">Compliance & Financial Analytics Platform</p>
+                </div>
+            </div>
+            
+            <div class="header-actions">
+                <button id="reset-defaults-btn" class="btn btn-secondary">
+                    <span class="btn-icon">↺</span> Reset Policy Defaults
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Workspace Grid -->
+        <div class="workspace-grid">
+            <!-- Sidebar Panel: Search, Filter, and Sliders -->
+            <aside class="workspace-sidebar">
+                <!-- Search Section -->
+                <div class="sidebar-card">
+                    <h2>Search Target</h2>
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="search-input" placeholder="Search target company..." autocomplete="off">
+                    </div>
+                </div>
+
+                <!-- Status Filter Section -->
+                <div class="sidebar-card">
+                    <h2>Compliance Status</h2>
+                    <div class="filter-pills">
+                        <button class="filter-pill active" data-filter="all">All</button>
+                        <button class="filter-pill" data-filter="compliant">Compliant</button>
+                        <button class="filter-pill" data-filter="non-compliant">Non-Compliant</button>
+                    </div>
+                </div>
+
+                <!-- Policy Simulation Sliders -->
+                <div class="sidebar-card">
+                    <div class="card-header">
+                        <h2>Policy Simulation</h2>
+                        <span class="badge badge-warning">Simulated</span>
+                    </div>
+                    <p class="card-description">Adjust thresholds to dynamically re-evaluate past target compliance.</p>
+                    
+                    <div class="sliders-list">
+                        <!-- Max Debt Slider -->
+                        <div class="slider-group">
+                            <div class="slider-info">
+                                <label for="debt-slider">Max Total Debt</label>
+                                <span id="debt-val" class="slider-value">$3,000,000</span>
+                            </div>
+                            <input type="range" id="debt-slider" min="100000" max="10000000" step="100000" value="3000000">
+                            <div class="slider-bounds">
+                                <span>$100K</span>
+                                <span>$10M</span>
+                            </div>
+                        </div>
+
+                        <!-- Min Runway Slider -->
+                        <div class="slider-group">
+                            <div class="slider-info">
+                                <label for="runway-slider">Min Runway (Months)</label>
+                                <span id="runway-val" class="slider-value">6 months</span>
+                            </div>
+                            <input type="range" id="runway-slider" min="1" max="24" step="1" value="6">
+                            <div class="slider-bounds">
+                                <span>1 mo</span>
+                                <span>24 mos</span>
+                            </div>
+                        </div>
+
+                        <!-- Max Burn Rate Slider -->
+                        <div class="slider-group">
+                            <div class="slider-info">
+                                <label for="burn-slider">Max Monthly Burn</label>
+                                <span id="burn-val" class="slider-value">$200,000</span>
+                            </div>
+                            <input type="range" id="burn-slider" min="10000" max="500000" step="10000" value="200000">
+                            <div class="slider-bounds">
+                                <span>$10K</span>
+                                <span>$500K</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Content: Card List & Selected Detail View -->
+            <main class="workspace-content">
+                <!-- Targets List Panel -->
+                <section class="targets-list-section">
+                    <div class="section-header">
+                        <h2>Audit History Records</h2>
+                        <span id="record-count" class="counter-badge">0 records</span>
+                    </div>
+                    
+                    <!-- Dynamic Target Cards List -->
+                    <div id="targets-list" class="targets-cards-container">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                    
+                    <!-- Empty State for List -->
+                    <div id="empty-list-state" class="empty-state hidden">
+                        <div class="empty-icon">📁</div>
+                        <h3>No target companies match</h3>
+                        <p>Try adjusting your search query or status filter.</p>
+                    </div>
+                </section>
+
+                <!-- Detailed Audit Evaluation & Trends Panel -->
+                <section class="detail-view-section">
+                    <!-- Placeholder State before selection -->
+                    <div id="empty-detail-state" class="detail-placeholder">
+                        <div class="pulse-ring">
+                            <span class="pulse-icon">📊</span>
+                        </div>
+                        <h3>Select a Target Company</h3>
+                        <p>Click on any audit record card to inspect compliance risks, details, and historical runway trends.</p>
+                    </div>
+
+                    <!-- Active Detail Panel -->
+                    <div id="active-detail-panel" class="detail-content hidden">
+                        <!-- Detail Header -->
+                        <div class="detail-header">
+                            <div class="detail-title-area">
+                                <h2 id="detail-company-name">Target Company</h2>
+                                <span id="detail-audit-date" class="audit-date-badge">Audited on: --</span>
+                            </div>
+                            <div id="detail-compliance-badge" class="badge">Compliant</div>
+                        </div>
+
+                        <!-- Content Grid inside detail -->
+                        <div class="detail-grid">
+                            <!-- Left: Compliance & Risks Checklist -->
+                            <div class="detail-card card-compliance">
+                                <h3>Compliance Check Results</h3>
+                                <ul id="compliance-checklist" class="compliance-checklist-list">
+                                    <!-- Populated by JavaScript -->
+                                </ul>
+                            </div>
+
+                            <!-- Right: Current Financial Values -->
+                            <div class="detail-card card-financials">
+                                <h3>Current Financial Snapshot</h3>
+                                <div class="financials-grid">
+                                    <div class="fin-stat">
+                                        <span class="stat-label">Total Outstanding Debt</span>
+                                        <span id="detail-debt" class="stat-val">--</span>
+                                    </div>
+                                    <div class="fin-stat">
+                                        <span class="stat-label">Monthly Burn Rate</span>
+                                        <span id="detail-burn" class="stat-val">--</span>
+                                    </div>
+                                    <div class="fin-stat">
+                                        <span class="stat-label">Cash Runway Remaining</span>
+                                        <span id="detail-runway" class="stat-val">--</span>
+                                    </div>
+                                    <div class="fin-stat">
+                                        <span class="stat-label">Litigation / Pending Lawsuits</span>
+                                        <span id="detail-lawsuits" class="stat-val">--</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Historical Projections / Trends Chart -->
+                        <div class="detail-card card-trends">
+                            <h3>Historical Cash Runway & Monthly Burn Rate Trends</h3>
+                            <div class="chart-container">
+                                <canvas id="trend-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- Seed Data Falls Back to Global Namespace if fetch fails -->
+    <script src="data.js"></script>
+    <!-- Application Logic -->
+    <script src="app.js"></script>
+</body>
+</html>

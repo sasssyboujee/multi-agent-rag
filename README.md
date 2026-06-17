@@ -14,8 +14,8 @@ graph TD
     subgraph Vector Boundary [Data Privacy Boundaries]
         FinAgent -->|RAG Query| FinStore[(Financial File Search Store)]
         LegalAgent -->|RAG Query| LegalStore[(Legal File Search Store)]
-        FinStore -.->|Reads| FinDoc[startup_finances.txt]
-        LegalStore -.->|Reads| LegalDoc[buyer_policies.txt]
+        FinStore -.->|Reads| FinDoc[data/startup_finances.txt]
+        LegalStore -.->|Reads| LegalDoc[data/buyer_policies.txt]
     end
     
     FinAgent -->|Extracts Metrics| Orchestrator
@@ -37,6 +37,27 @@ graph TD
     FinAgent -.-> ResiliencyLayer
     LegalAgent -.-> ResiliencyLayer
     Synthesis -.-> ResiliencyLayer
+```
+
+---
+
+## Repository Structure
+
+```text
+.
+├── data/                   # Input data files for RAG
+│   ├── buyer_policies.txt      # Corporate buying limits
+│   └── startup_finances.txt    # Target company financial data
+├── src/                    # Source code
+│   └── dashboard/              # Frontend M&A Audit Dashboard
+│       ├── index.html          # SPA Entrypoint
+│       ├── style.css           # Premium styling
+│       ├── app.js              # Frontend logic
+│       ├── data.js             # Static fallback data
+│       └── audit_reports.json  # Mock JSON database
+├── run_audit.py            # Main M&A Orchestrator entrypoint
+├── server.py               # Lightweight dashboard server
+└── README.md               # Project documentation
 ```
 
 ---
@@ -90,5 +111,11 @@ The final synthesis agent is strictly constrained to compile the audit findings 
 
 3. Run the orchestration pipeline:
    ```bash
-   python manual_sandbox.py
+   python run_audit.py
    ```
+
+4. Start the dashboard server:
+   ```bash
+   python server.py
+   ```
+   Then navigate to `http://localhost:8000` to view the audit results.

@@ -1,0 +1,187 @@
+const INITIAL_AUDIT_DATA = [
+  {
+    "id": "1",
+    "companyName": "AlphaTech Robotics",
+    "auditDate": "2026-06-18",
+    "currentFinancials": {
+      "burnRate": 120000,
+      "runway": 14,
+      "totalDebt": 495000,
+      "hasLawsuits": false
+    },
+    "historicalData": {
+      "months": [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun"
+      ],
+      "burnRateHistory": [
+        105600,
+        110400,
+        115200,
+        120000,
+        124800,
+        129600
+      ],
+      "runwayHistory": [
+        19,
+        18,
+        17,
+        16,
+        15,
+        14
+      ]
+    }
+  },
+  {
+    "id": "2",
+    "companyName": "CloudScale Systems",
+    "auditDate": "2025-10-08",
+    "currentFinancials": {
+      "burnRate": 150000,
+      "runway": 8,
+      "totalDebt": 1200000,
+      "hasLawsuits": false
+    },
+    "historicalData": {
+      "months": [
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct"
+      ],
+      "burnRateHistory": [
+        180000,
+        175000,
+        165000,
+        160000,
+        155000,
+        150000
+      ],
+      "runwayHistory": [
+        6,
+        6,
+        7,
+        7,
+        8,
+        8
+      ]
+    }
+  },
+  {
+    "id": "3",
+    "companyName": "HealthPulse AI",
+    "auditDate": "2025-09-24",
+    "currentFinancials": {
+      "burnRate": 180000,
+      "runway": 10,
+      "totalDebt": 850000,
+      "hasLawsuits": true
+    },
+    "historicalData": {
+      "months": [
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep"
+      ],
+      "burnRateHistory": [
+        140000,
+        150000,
+        160000,
+        170000,
+        175000,
+        180000
+      ],
+      "runwayHistory": [
+        12,
+        11,
+        11,
+        10,
+        10,
+        10
+      ]
+    }
+  },
+  {
+    "id": "4",
+    "companyName": "GreenGrid Power",
+    "auditDate": "2025-12-05",
+    "currentFinancials": {
+      "burnRate": 90000,
+      "runway": 18,
+      "totalDebt": 2100000,
+      "hasLawsuits": false
+    },
+    "historicalData": {
+      "months": [
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec"
+      ],
+      "burnRateHistory": [
+        120000,
+        115000,
+        110000,
+        100000,
+        95000,
+        90000
+      ],
+      "runwayHistory": [
+        12,
+        13,
+        14,
+        15,
+        17,
+        18
+      ]
+    }
+  },
+  {
+    "id": "5",
+    "companyName": "FinFlow Tech",
+    "auditDate": "2026-01-10",
+    "currentFinancials": {
+      "burnRate": 250000,
+      "runway": 4,
+      "totalDebt": 450000,
+      "hasLawsuits": false
+    },
+    "historicalData": {
+      "months": [
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+        "Jan"
+      ],
+      "burnRateHistory": [
+        180000,
+        195000,
+        210000,
+        230000,
+        245000,
+        250000
+      ],
+      "runwayHistory": [
+        9,
+        8,
+        7,
+        6,
+        5,
+        4
+      ]
+    }
+  }
+];
