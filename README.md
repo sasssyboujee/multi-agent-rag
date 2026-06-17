@@ -2,7 +2,7 @@
 
 An enterprise-grade, stateful Multi-Agent Retrieval-Augmented Generation (RAG) system built using the modern `google-genai` Python SDK. The system orchestrates specialized sub-agents to perform a compliance audit on a target company (M&A scenario), comparing financial health metrics against corporate limits.
 
-## 📐 System Architecture (Mermaid Diagram)
+## System Architecture (Mermaid Diagram)
 
 ```mermaid
 graph TD
@@ -41,7 +41,7 @@ graph TD
 
 ---
 
-## 🚀 Key Engineering Features
+## Key Engineering Features
 
 ### 1. Isolated Vector Search boundaries (Data Privacy)
 Rather than index all company data into a single vector database, this system provisions **decoupled File Search Stores** for different business domains:
@@ -66,7 +66,7 @@ The final synthesis agent is strictly constrained to compile the audit findings 
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 * **Language:** Python 3.12.9
 * **SDK:** `google-genai` (Modern Gemini Developer API)
 * **Libraries:** `pydantic` (for type enforcement and contract matching)
@@ -74,7 +74,7 @@ The final synthesis agent is strictly constrained to compile the audit findings 
 
 ---
 
-## 💻 Setup & Run
+## Setup & Run
 
 1. Clone the repository and configure the virtual environment:
    ```bash
