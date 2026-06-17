@@ -30,6 +30,7 @@ agent_session_state.json
 # Gemini Agent IDE Workspace Folder
 .gemini/
 .specify/
+.specs
 
-# Specs
-specs/
+
+
